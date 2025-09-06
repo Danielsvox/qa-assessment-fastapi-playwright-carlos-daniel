@@ -1,0 +1,14 @@
+node_modules/
+test-results/
+playwright-report/
+.env
+.env.local
+.DS_Store
+dist/
+coverage/
+*.log
+.vscode/settings.json.bak
+.idea/
+*.swp
+*.swo
+*~

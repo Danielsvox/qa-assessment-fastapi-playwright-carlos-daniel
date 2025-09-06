@@ -1,0 +1,38 @@
+{
+  "name": "qa-assessment-fastapi-playwright-carlos-daniel",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "playwright-core": "^1.55.0",
+    "undici-types": "^6.21.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.35.0",
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "cross-env": "^10.0.0",
+    "dotenv": "^17.2.2",
+    "eslint": "^9.35.0",
+    "playwright": "^1.55.0",
+    "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "lint": "cross-env ESLINT_USE_FLAT_CONFIG=false eslint . --ext .ts",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
