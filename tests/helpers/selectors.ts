@@ -32,15 +32,15 @@ export const byRole = (page: Page) => ({
 export const byField = (page: Page) => ({
   email: (): Locator =>
     page
-      .getByLabel(/email/i)
-      .or(page.getByPlaceholder(/email/i))
-      .or(page.locator('input[type="email"]')),
+      .getByRole('textbox', { name: /email/i })
+      .or(page.locator('input[type="email"]'))
+      .or(page.getByPlaceholder(/email/i)),
 
   password: (): Locator =>
     page
-      .getByLabel(/password/i)
-      .or(page.getByPlaceholder(/password/i))
-      .or(page.locator('input[type="password"]')),
+      .getByRole('textbox', { name: /password/i })
+      .or(page.locator('input[type="password"]'))
+      .or(page.getByPlaceholder(/password/i)),
 
   confirmPassword: (): Locator =>
     page
