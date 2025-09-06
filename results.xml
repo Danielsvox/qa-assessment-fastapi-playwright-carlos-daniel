@@ -1,0 +1,44 @@
+<testsuites id="" name="" tests="9" failures="0" skipped="9" errors="0" time="0.28559400000000007">
+<testsuite name="auth\signup.spec.ts" timestamp="2025-09-06T21:39:10.070Z" hostname="chromium" tests="3" failures="0" skipped="3" time="0" errors="0">
+<testcase name="Authentication - User Signup › TC-06: Signup with valid data (happy path)" classname="auth\signup.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication - User Signup › TC-07: Signup with invalid data shows validation errors" classname="auth\signup.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication - User Signup › TC-06 Verification: Admin can see created user" classname="auth\signup.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="auth\signup.spec.ts" timestamp="2025-09-06T21:39:10.070Z" hostname="firefox" tests="3" failures="0" skipped="3" time="0" errors="0">
+<testcase name="Authentication - User Signup › TC-06: Signup with valid data (happy path)" classname="auth\signup.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication - User Signup › TC-07: Signup with invalid data shows validation errors" classname="auth\signup.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication - User Signup › TC-06 Verification: Admin can see created user" classname="auth\signup.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="auth\signup.spec.ts" timestamp="2025-09-06T21:39:10.070Z" hostname="webkit" tests="3" failures="0" skipped="3" time="0" errors="0">
+<testcase name="Authentication - User Signup › TC-06: Signup with valid data (happy path)" classname="auth\signup.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication - User Signup › TC-07: Signup with invalid data shows validation errors" classname="auth\signup.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Authentication - User Signup › TC-06 Verification: Admin can see created user" classname="auth\signup.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+</testsuites>

@@ -103,11 +103,12 @@ npm run format
 
 The test suite covers the following areas mapped to the original Test Plan:
 
-| Test File                   | Test Cases                 | Description                               |
-| --------------------------- | -------------------------- | ----------------------------------------- |
-| `tests/auth/login.spec.ts`  | TC-01, TC-02               | Positive/negative login scenarios         |
-| `tests/auth/guards.spec.ts` | TC-04, TC-05               | Route protection and logout functionality |
-| `tests/crud/entity.spec.ts` | TC-06, TC-07, TC-08, TC-09 | CRUD operations on entities               |
+| Test File                   | Test Cases   | Description                               |
+| --------------------------- | ------------ | ----------------------------------------- |
+| `tests/auth/login.spec.ts`  | TC-01, TC-02 | Positive/negative login scenarios         |
+| `tests/auth/signup.spec.ts` | TC-06, TC-07 | User registration with validation         |
+| `tests/auth/guards.spec.ts` | TC-04, TC-05 | Route protection and logout functionality |
+| `tests/crud/entity.spec.ts` | TC-08, TC-09 | CRUD operations on entities               |
 
 ### Test Case Details
 
@@ -115,8 +116,8 @@ The test suite covers the following areas mapped to the original Test Plan:
 - **TC-02**: Invalid login attempts with wrong credentials
 - **TC-04**: Unauthenticated access to protected routes
 - **TC-05**: Logout functionality and session clearing
-- **TC-06**: Create entity with valid data (happy path)
-- **TC-07**: Create entity with invalid data (validation)
+- **TC-06**: User signup with valid data (randomized email)
+- **TC-07**: User signup with invalid data (validation)
 - **TC-08**: Update existing entity
 - **TC-09**: Delete entity with confirmation
 

@@ -13,14 +13,19 @@ This document maps the implemented Playwright test specifications to the origina
 | TC-04        | Unauthenticated access to protected routes | `tests/auth/guards.spec.ts` | ✅ Implemented | Tests multiple potential protected routes       |
 | TC-05        | Logout clears session                      | `tests/auth/guards.spec.ts` | ✅ Implemented | Includes session persistence verification       |
 
+### User Signup Tests
+
+| Test Plan ID | Implementation                | File                        | Status         | Notes                                  |
+| ------------ | ----------------------------- | --------------------------- | -------------- | -------------------------------------- |
+| TC-06        | User signup with valid data   | `tests/auth/signup.spec.ts` | ✅ Implemented | Creates new user with randomized email |
+| TC-07        | User signup with invalid data | `tests/auth/signup.spec.ts` | ✅ Implemented | Tests form validation errors           |
+
 ### CRUD Operations Tests
 
-| Test Plan ID | Implementation                | File                        | Status         | Notes                            |
-| ------------ | ----------------------------- | --------------------------- | -------------- | -------------------------------- |
-| TC-06        | Create entity with valid data | `tests/crud/entity.spec.ts` | ✅ Implemented | Auto-discovers CRUD interface    |
-| TC-07        | Create with invalid input     | `tests/crud/entity.spec.ts` | ✅ Implemented | Tests validation error handling  |
-| TC-08        | Update existing entity        | `tests/crud/entity.spec.ts` | ✅ Implemented | Finds and edits existing records |
-| TC-09        | Delete with confirmation      | `tests/crud/entity.spec.ts` | ✅ Implemented | Handles confirmation dialogs     |
+| Test Plan ID | Implementation           | File                        | Status         | Notes                            |
+| ------------ | ------------------------ | --------------------------- | -------------- | -------------------------------- |
+| TC-08        | Update existing entity   | `tests/crud/entity.spec.ts` | ✅ Implemented | Finds and edits existing records |
+| TC-09        | Delete with confirmation | `tests/crud/entity.spec.ts` | ✅ Implemented | Handles confirmation dialogs     |
 
 ### Additional Test Cases
 
