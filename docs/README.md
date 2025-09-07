@@ -283,6 +283,21 @@ Time: ~18.3 seconds
 Coverage: 100% of planned test cases
 ```
 
+### Assessment Findings
+
+While all automated tests pass successfully, exploratory testing revealed several usability and user experience issues that should be addressed:
+
+📋 **[View Detailed Bug Report →](bug_reports-assessment-findings.md)**
+
+The bug report documents 4 identified issues ranging from Medium to Low severity, including:
+
+- Missing user feedback for account creation
+- Incomplete email notification flows
+- Non-standard data ordering in lists
+- Lack of sorting/filtering options
+
+These findings demonstrate thorough testing beyond automated scenarios and provide actionable recommendations for improving user experience.
+
 ### Test Status by Category
 
 - **✅ Authentication (9 tests)**: All passing
