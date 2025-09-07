@@ -33,34 +33,34 @@ export const byField = (page: Page) => ({
   email: (): Locator =>
     page
       .getByRole('textbox', { name: /email/i })
-      .or(page.locator('input[type="email"]'))
       .or(page.getByPlaceholder(/email/i)),
 
+  // Only the actual password input
   password: (): Locator =>
     page
-      .getByRole('textbox', { name: /password/i })
-      .or(page.locator('input[type="password"]'))
-      .or(page.getByPlaceholder(/password/i)),
+      .locator('input[name="password"]')
+      .or(page.getByRole('textbox', { name: /^password$/i })),
 
+  // Confirm password for signup screens
   confirmPassword: (): Locator =>
     page
-      .getByLabel(/confirm.*password|password.*confirm/i)
-      .or(page.getByPlaceholder(/confirm.*password|password.*confirm/i)),
-
-  firstName: (): Locator =>
-    page
-      .getByLabel(/first.*name|given.*name/i)
-      .or(page.getByPlaceholder(/first.*name|given.*name/i)),
-
-  lastName: (): Locator =>
-    page
-      .getByLabel(/last.*name|family.*name|surname/i)
-      .or(page.getByPlaceholder(/last.*name|family.*name|surname/i)),
+      .locator('input[name="confirm_password"]')
+      .or(page.getByRole('textbox', { name: /^confirm password$/i })),
 
   fullName: (): Locator =>
     page
-      .getByLabel(/^name$|full.*name/i)
-      .or(page.getByPlaceholder(/^name$|full.*name/i)),
+      .getByRole('textbox', { name: /full name|name/i })
+      .or(page.getByPlaceholder(/full name|name/i)),
+});
+
+export const byAction = (page: Page) => ({
+  submit: () =>
+    page
+      .getByRole('button', {
+        name: /log in|sign in|submit|continue|sign up|create account|register/i,
+      })
+      .or(page.locator('button[type="submit"]')),
+  logout: () => page.getByRole('button', { name: /logout|sign out/i }),
 });
 
 export const byText = (page: Page) => ({

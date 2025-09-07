@@ -1,19 +1,17 @@
 import { test, expect } from '../fixtures/auth';
-import { byRole, byText } from '../helpers/selectors';
-import { ROUTES, discoverRoutes } from '../helpers/routes';
+import { byAction, byRole, patterns } from '../helpers/selectors';
+import { ROUTES } from '../helpers/routes';
 
 test.describe('Authentication - Route Guards', () => {
+  // Removed problematic beforeAll hook that was causing test failures
+
   test.beforeEach(async ({ page }) => {
-    // Discover routes for each test
-    await discoverRoutes(page);
+    // No navigation here
   });
 
-  test('TC-04: Unauthenticated access to protected route redirects to login', async ({
-    page,
-  }) => {
+  test('TC-04: Access protected page without auth', async ({ page }) => {
     // Start with a fresh, unauthenticated context
     const protectedRoutes = [
-      ROUTES.dashboard,
       '/profile',
       '/settings',
       '/admin',
@@ -98,9 +96,7 @@ test.describe('Authentication - Route Guards', () => {
     );
   });
 
-  test('TC-05: Logout clears session and redirects to login', async ({
-    authenticatedPage,
-  }) => {
+  test('TC-05: Logout clears session', async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     // Verify we start in authenticated state
@@ -125,7 +121,36 @@ test.describe('Authentication - Route Guards', () => {
     expect(startAuthenticated).toBe(true);
     console.log('✓ Confirmed starting in authenticated state');
 
-    // Find and click logout
+    // First click on the "User" button at top right corner, then logout
+    const userButtonSelectors = [
+      page.getByText(/^user$/i),
+      page.getByRole('button', { name: /user/i }),
+      page.locator('button').filter({ hasText: /^user$/i }),
+      page.locator('[aria-label*="user menu"], [aria-label*="user account"]'),
+      page.locator('.user-menu, .account-menu, .profile-menu'),
+      page.getByText(process.env.ADMIN_EMAIL!).first(),
+    ];
+
+    let loggedOut = false;
+    let userButtonFound = false;
+
+    // Try to find and click the User button first
+    for (const selector of userButtonSelectors) {
+      try {
+        const element = selector.first();
+        if (await element.isVisible({ timeout: 2000 })) {
+          console.log('✓ Found User button, clicking...');
+          await element.click();
+          await page.waitForTimeout(1000); // Wait for dropdown/menu to open
+          userButtonFound = true;
+          break;
+        }
+      } catch (e) {
+        // Continue trying other selectors
+      }
+    }
+
+    // Now look for logout option (should be visible after clicking User button)
     const logoutSelectors = [
       page.getByText(/^logout$/i),
       page.getByText(/^sign out$/i),
@@ -138,12 +163,11 @@ test.describe('Authentication - Route Guards', () => {
       page.locator('button, a').filter({ hasText: /logout|sign.*out/i }),
     ];
 
-    let loggedOut = false;
     for (const selector of logoutSelectors) {
       try {
         const element = selector.first();
-        if (await element.isVisible({ timeout: 1000 })) {
-          console.log('✓ Found logout control, clicking...');
+        if (await element.isVisible({ timeout: 2000 })) {
+          console.log('✓ Found logout option, clicking...');
           await element.click();
           await page.waitForLoadState('networkidle');
           loggedOut = true;
@@ -151,43 +175,6 @@ test.describe('Authentication - Route Guards', () => {
         }
       } catch (e) {
         // Continue trying other selectors
-      }
-    }
-
-    // If no explicit logout button found, try user menu approach
-    if (!loggedOut) {
-      const userMenuSelectors = [
-        page.locator('.user-menu, .account-menu, .profile-menu'),
-        page.locator('[aria-label*="user"], [aria-label*="account"]'),
-        page.getByText(process.env.ADMIN_EMAIL!).first(),
-      ];
-
-      for (const menuSelector of userMenuSelectors) {
-        try {
-          const menu = menuSelector.first();
-          if (await menu.isVisible({ timeout: 1000 })) {
-            await menu.click();
-            await page.waitForTimeout(500); // Wait for menu to open
-
-            // Try to find logout in the opened menu
-            for (const logoutSelector of logoutSelectors) {
-              try {
-                const logoutOption = logoutSelector.first();
-                if (await logoutOption.isVisible({ timeout: 1000 })) {
-                  await logoutOption.click();
-                  await page.waitForLoadState('networkidle');
-                  loggedOut = true;
-                  break;
-                }
-              } catch (e) {
-                // Continue
-              }
-            }
-            if (loggedOut) break;
-          }
-        } catch (e) {
-          // Continue trying other menu approaches
-        }
       }
     }
 
@@ -203,8 +190,9 @@ test.describe('Authentication - Route Guards', () => {
       });
     }
 
-    // Verify logout was successful by trying to access protected route
-    const protectedRoutes = [ROUTES.dashboard, '/profile', '/settings'];
+    // Verify logout was successful by trying to access protected routes
+    // Note: /dashboard route doesn't exist in this project, using available routes
+    const protectedRoutes = ['/items', '/admin', '/profile', '/settings'];
     let logoutVerified = false;
 
     for (const route of protectedRoutes) {
@@ -255,7 +243,7 @@ test.describe('Authentication - Route Guards', () => {
     const page = authenticatedPage;
 
     // Navigate to a protected route
-    await page.goto(ROUTES.dashboard);
+    await page.goto('/items');
     await page.waitForLoadState('networkidle');
 
     // Verify we can access it while authenticated

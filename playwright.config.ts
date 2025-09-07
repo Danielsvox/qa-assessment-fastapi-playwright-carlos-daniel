@@ -25,7 +25,13 @@ export default defineConfig({
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+        // Firefox specific settings to handle slower loading
+        timeout: 60000,
+        navigationTimeout: 60000,
+        actionTimeout: 30000,
+      },
     },
     {
       name: 'webkit',

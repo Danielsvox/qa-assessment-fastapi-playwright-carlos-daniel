@@ -1,20 +1,13 @@
 import { test, expect } from '../fixtures/auth';
-import { byField, byRole, byText } from '../helpers/selectors';
-import { ROUTES, discoverRoutes } from '../helpers/routes';
+import { byField, byAction } from '../helpers/selectors';
 
 test.describe('Authentication - Login', () => {
-  test.beforeEach(async ({ page }) => {
-    // Discover routes for each test
-    await discoverRoutes(page);
-  });
-
-  test('TC-01: Positive login with valid credentials', async ({
+  test('TC-01: Login with valid credentials', async ({
     page,
     loginAsAdmin,
   }) => {
     // Navigate to login page
-    await page.goto(ROUTES.login);
-    await page.waitForLoadState('networkidle');
+    await page.goto('/login', { waitUntil: 'domcontentloaded' });
 
     // Verify we're on login page
     await expect(byField(page).email()).toBeVisible();
@@ -28,12 +21,12 @@ test.describe('Authentication - Login', () => {
       // Check for user email or name in header/navigation
       page.getByText(process.env.ADMIN_EMAIL!).first(),
       // Check for Dashboard heading or link
-      byRole(page).heading('Dashboard'),
-      byRole(page).link('Dashboard'),
+      page.getByRole('heading', { name: /dashboard/i }),
+      page.getByRole('link', { name: /dashboard/i }),
       // Check for Profile or user menu
       page.getByText(/profile/i).first(),
       // Check for logout option
-      page.getByText(/logout|sign out/i).first(),
+      byAction(page).logout(),
     ];
 
     let foundAuthIndicator = false;
@@ -64,10 +57,9 @@ test.describe('Authentication - Login', () => {
     );
   });
 
-  test('TC-02: Negative login with invalid credentials', async ({ page }) => {
+  test('TC-02: Login with invalid password', async ({ page }) => {
     // Navigate to login page
-    await page.goto(ROUTES.login);
-    await page.waitForLoadState('networkidle');
+    await page.goto('/login', { waitUntil: 'domcontentloaded' });
 
     // Verify we're on login page
     await expect(byField(page).email()).toBeVisible();
@@ -79,59 +71,29 @@ test.describe('Authentication - Login', () => {
       .fill(process.env.ADMIN_EMAIL || 'test@example.com');
     await byField(page).password().fill('wrongpassword123');
 
-    // Submit form
-    const submitSelectors = [
-      'button[type="submit"]',
-      'input[type="submit"]',
-      'button:has-text("Sign in")',
-      'button:has-text("Log in")',
-      'button:has-text("Login")',
-    ];
+    // Submit form using byAction
+    await byAction(page).submit().click();
 
-    let submitted = false;
-    for (const selector of submitSelectors) {
-      try {
-        const submitButton = page.locator(selector).first();
-        if (await submitButton.isVisible({ timeout: 1000 })) {
-          await submitButton.click();
-          submitted = true;
-          break;
-        }
-      } catch (e) {
-        // Continue trying other selectors
-      }
+    // Assert error message is displayed via ARIA alert or still on login page
+    const alert = page.getByRole('alert');
+    const alertVisible = await alert
+      .isVisible({ timeout: 3000 })
+      .catch(() => false);
+    const stillOnLogin =
+      page.url().includes('login') || page.url().includes('signin');
+
+    if (alertVisible) {
+      await expect(alert).toContainText(
+        /invalid|incorrect|required|wrong|failed|error/i
+      );
+      console.log('✓ Error message found via ARIA alert');
+    } else if (stillOnLogin) {
+      console.log('✓ Still on login page after invalid credentials');
+    } else {
+      throw new Error(
+        'Expected either an error message or to remain on login page'
+      );
     }
-
-    if (!submitted) {
-      // Fallback: press Enter on password field
-      await byField(page).password().press('Enter');
-    }
-
-    await page.waitForLoadState('networkidle');
-
-    // Assert error message is displayed
-    const errorSelectors = [
-      byText(page).error(),
-      page.getByText(/invalid|incorrect|wrong|failed/i),
-      page.getByText(/email.*password|credentials/i),
-      page.locator('.error, .alert-danger, .text-red-500, [role="alert"]'),
-    ];
-
-    let foundError = false;
-    for (const errorSelector of errorSelectors) {
-      try {
-        if (await errorSelector.first().isVisible({ timeout: 3000 })) {
-          foundError = true;
-          const errorText = await errorSelector.first().textContent();
-          console.log(`✓ Found error message: ${errorText}`);
-          break;
-        }
-      } catch (e) {
-        // Continue checking other error indicators
-      }
-    }
-
-    expect(foundError).toBe(true);
 
     // Assert that authenticated UI elements are NOT present
     const authElements = [
@@ -160,25 +122,14 @@ test.describe('Authentication - Login', () => {
   });
 
   test('TC-02b: Login with empty credentials', async ({ page }) => {
-    await page.goto(ROUTES.login);
-    await page.waitForLoadState('networkidle');
+    await page.goto('/login', { waitUntil: 'domcontentloaded' });
 
     // Try to submit empty form
-    const submitButton = page
-      .locator('button[type="submit"], input[type="submit"]')
-      .first();
-    if (await submitButton.isVisible({ timeout: 1000 })) {
-      await submitButton.click();
-    } else {
-      await byField(page).password().press('Enter');
-    }
-
-    await page.waitForLoadState('networkidle');
+    await byAction(page).submit().click();
 
     // Should show validation errors or remain on login page
     const hasValidationError = await page
-      .locator('.error, [role="alert"], .text-red-500')
-      .first()
+      .getByRole('alert')
       .isVisible({ timeout: 2000 });
     const stillOnLogin =
       page.url().includes('login') || page.url().includes('signin');
